@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.fahimeh.movievault.ui.navigation.AppNavigation
 import com.fahimeh.movievault.ui.screen.banner.BannerScreen
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
 
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MovieVaultTheme {
 
-                BannerScreen()
+                AppNavigation()
             }
         }
     }
