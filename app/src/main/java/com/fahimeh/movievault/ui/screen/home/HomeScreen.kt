@@ -20,7 +20,9 @@ import com.fahimeh.movievault.ui.design.Dimens
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onMovieClick: (Int) -> Unit = {}
+) {
     val movies = FakeMovieRepository.getMovies()
 
     Column(
@@ -41,7 +43,10 @@ fun HomeScreen() {
             horizontalArrangement = Arrangement.spacedBy(Dimens.lg),
             content = {
                 items(movies) { movie ->
-                    MovieCard(movie = movie)
+                    MovieCard(
+                        movie = movie,
+                        onClick = { onMovieClick(movie.id) }
+                    )
                 }
             }
         )
