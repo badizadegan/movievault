@@ -41,8 +41,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("movieId") { type = NavType.IntType }
             )
-        ) {
-            DetailsScreen()
+        ) { backStackEntry ->
+
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
+
+            DetailsScreen(movieId = movieId)
         }
     }
 }

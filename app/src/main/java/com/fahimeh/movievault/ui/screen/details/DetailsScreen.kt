@@ -20,8 +20,10 @@ import com.fahimeh.movievault.data.repository.FakeMovieRepository
 import com.fahimeh.movievault.ui.design.Dimens
 
 @Composable
-fun DetailsScreen() {
-    val movie = FakeMovieRepository.getMovies().first()
+fun DetailsScreen(movieId: Int) {
+    val movie = FakeMovieRepository
+        .getMovies()
+        .first{ it.id == movieId }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
