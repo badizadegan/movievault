@@ -1,10 +1,11 @@
 package com.fahimeh.movievault.data.repository
 
 import com.fahimeh.movievault.domain.model.Movie
+import com.fahimeh.movievault.domain.repository.MovieRepository
 
-object FakeMovieRepository {
+class FakeMovieRepository : MovieRepository {
 
-    fun getMovies(): List<Movie> = listOf(
+    private val movies = listOf(
         Movie(
             id = 1,
             title = "Dune: Part Two",
@@ -27,4 +28,9 @@ object FakeMovieRepository {
             year = "2014"
         )
     )
+
+    override fun getMovies(): List<Movie> = movies
+
+    override fun getMovieById(id: Int): Movie? =
+        movies.find { it.id == id }
 }

@@ -16,62 +16,83 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.fahimeh.movievault.core.util.UiState
 import com.fahimeh.movievault.data.repository.FakeMovieRepository
 import com.fahimeh.movievault.ui.design.Dimens
 
 @Composable
-fun DetailsScreen(movieId: Int) {
-    val movie = FakeMovieRepository
-        .getMovies()
-        .first{ it.id == movieId }
+fun DetailsScreen(
+    movieId: Int,
+    viewModel: DetailsViewModel = DetailsViewModel()
+    ) {
+    when (val state = viewModel.loadMovie(movieId)) {
 
-    Column(modifier = Modifier.fillMaxSize()) {
-
-        Box(modifier = Modifier.height(420.dp)) {
-            AsyncImage(
-                model = movie.posterUrl,
-                contentDescription = movie.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.background
-                            )
-                        )
-                    )
+        UiState.Loading -> {
+            Text(
+                text = "Loading...",
+                modifier = Modifier.padding(Dimens.lg)
             )
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Dimens.lg)
-        ) {
+        is UiState.Error -> {
             Text(
-                text = movie.title,
-                style = MaterialTheme.typography.titleLarge
+                text = state.message,
+                modifier = Modifier.padding(Dimens.lg)
             )
+        }
 
-            Spacer(Modifier.height(Dimens.sm))
+        is UiState.Success -> {
+            val movie = state.data
 
-            Text(
-                text = "${movie.year} • ⭐ ${movie.rating}",
-                style = MaterialTheme.typography.labelSmall
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
 
-            Spacer(Modifier.height(Dimens.lg))
+                Box(modifier = Modifier.height(420.dp)) {
+                    AsyncImage(
+                        model = movie.posterUrl,
+                        contentDescription = movie.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
 
-            Text(
-                text = "This is a placeholder description. Later we will load the real overview from TMDB API.",
-                style = MaterialTheme.typography.bodyMedium
-            )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.background
+                                    )
+                                )
+                            )
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimens.lg)
+                ) {
+                    Text(
+                        text = movie.title,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Spacer(Modifier.height(Dimens.sm))
+
+                    Text(
+                        text = "${movie.year} • ⭐ ${movie.rating}",
+                        style = MaterialTheme.typography.labelSmall
+                    )
+
+                    Spacer(Modifier.height(Dimens.lg))
+
+                    Text(
+                        text = "This is a placeholder description. Later we will load the real overview from TMDB API.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         }
     }
 }

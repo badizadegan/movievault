@@ -14,42 +14,54 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.fahimeh.movievault.data.repository.FakeMovieRepository
+import com.fahimeh.movievault.core.util.UiState
 import com.fahimeh.movievault.ui.components.MovieCard
 import com.fahimeh.movievault.ui.design.Dimens
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
 
 @Composable
 fun HomeScreen(
-    onMovieClick: (Int) -> Unit = {}
+    onMovieClick: (Int) -> Unit = {},
+    viewModel: HomeViewModel = HomeViewModel()
 ) {
-    val movies = FakeMovieRepository.getMovies()
+    when (val state = viewModel.uiState) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Dimens.lg)
-    ) {
-        Text(
-            text = "Popular Movies",
-            style = MaterialTheme.typography.titleLarge
-        )
+        UiState.Loading -> {
+            Text(text = "Loading...")
+        }
 
-        Spacer(Modifier.height(Dimens.lg))
+        is UiState.Error -> {
+            Text(text = state.message)
+        }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(Dimens.lg),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.lg),
-            content = {
-                items(movies) { movie ->
-                    MovieCard(
-                        movie = movie,
-                        onClick = { onMovieClick(movie.id) }
-                    )
-                }
+        is UiState.Success -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Dimens.lg)
+            ) {
+                Text(
+                    text = "Popular Movies",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Spacer(Modifier.height(Dimens.lg))
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.lg),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.lg),
+                    content = {
+                        items(state.data) { movie ->
+                            MovieCard(
+                                movie = movie,
+                                onClick = { onMovieClick(movie.id) }
+                            )
+                        }
+                    }
+                )
             }
-        )
+        }
     }
 }
 
