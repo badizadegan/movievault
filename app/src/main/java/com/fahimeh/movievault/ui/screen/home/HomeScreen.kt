@@ -12,9 +12,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.fahimeh.movievault.core.util.UiState
+import com.fahimeh.movievault.domain.model.Movie
 import com.fahimeh.movievault.ui.components.MovieCard
 import com.fahimeh.movievault.ui.design.Dimens
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
@@ -24,17 +27,20 @@ fun HomeScreen(
     onMovieClick: (Int) -> Unit = {},
     viewModel: HomeViewModel = HomeViewModel()
 ) {
-    when (val state = viewModel.uiState) {
+    val state by viewModel.uiState.collectAsState()
 
+    when (state) {
         UiState.Loading -> {
             Text(text = "Loading...")
         }
 
         is UiState.Error -> {
-            Text(text = state.message)
+            Text((state as UiState.Error).message)
         }
 
         is UiState.Success -> {
+            val movies = (state as UiState.Success<List<Movie>>).data
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -47,19 +53,19 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(Dimens.lg))
 
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     verticalArrangement = Arrangement.spacedBy(Dimens.lg),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.lg),
-                    content = {
-                        items(state.data) { movie ->
-                            MovieCard(
-                                movie = movie,
-                                onClick = { onMovieClick(movie.id) }
-                            )
-                        }
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.lg)
+                ) {
+                    items(movies) { movie ->
+                        MovieCard(
+                            movie = movie,
+                            onClick = { onMovieClick(movie.id) }
+                        )
                     }
-                )
+                }
             }
         }
     }

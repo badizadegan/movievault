@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.fahimeh.movievault.core.util.UiState
 import com.fahimeh.movievault.data.repository.FakeMovieRepository
+import com.fahimeh.movievault.domain.model.Movie
 import com.fahimeh.movievault.ui.design.Dimens
 
 @Composable
@@ -25,8 +29,14 @@ fun DetailsScreen(
     movieId: Int,
     viewModel: DetailsViewModel = DetailsViewModel()
     ) {
-    when (val state = viewModel.loadMovie(movieId)) {
 
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(movieId) {
+        viewModel.loadMovie(movieId)
+    }
+
+    when (state) {
         UiState.Loading -> {
             Text(
                 text = "Loading...",
@@ -36,13 +46,13 @@ fun DetailsScreen(
 
         is UiState.Error -> {
             Text(
-                text = state.message,
+                text = (state as UiState.Error).message,
                 modifier = Modifier.padding(Dimens.lg)
             )
         }
 
         is UiState.Success -> {
-            val movie = state.data
+            val movie = (state as UiState.Success<Movie>).data
 
             Column(modifier = Modifier.fillMaxSize()) {
 

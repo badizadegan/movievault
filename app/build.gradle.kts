@@ -1,8 +1,20 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val tmdbApiKey: String = localProperties.getProperty("TMDB_API_KEY") ?: ""
+
 
 android {
     namespace = "com.fahimeh.movievault"
@@ -18,6 +30,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "TMDB_API_KEY", "\"$tmdbApiKey\"")
+
     }
 
     buildTypes {
@@ -38,6 +53,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -59,5 +75,17 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(libs.navigation.compose)
+    implementation(libs.coil.compose)
+
+    // Network
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.moshi)
+
+    implementation(libs.moshi.core)
+    implementation(libs.moshi.kotlin)
+
+    implementation(libs.okhttp.logging)
+
+    // Images
     implementation(libs.coil.compose)
 }
