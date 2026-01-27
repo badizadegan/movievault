@@ -20,8 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.fahimeh.movievault.core.util.UiState
-import com.fahimeh.movievault.data.repository.FakeMovieRepository
-import com.fahimeh.movievault.domain.model.Movie
+import com.fahimeh.movievault.domain.model.MovieDetails
 import com.fahimeh.movievault.ui.design.Dimens
 
 @Composable
@@ -33,7 +32,7 @@ fun DetailsScreen(
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(movieId) {
-        viewModel.loadMovie(movieId)
+        viewModel.loadMovieDetails(movieId)
     }
 
     when (state) {
@@ -52,14 +51,14 @@ fun DetailsScreen(
         }
 
         is UiState.Success -> {
-            val movie = (state as UiState.Success<Movie>).data
+            val details = (state as UiState.Success<MovieDetails>).data
 
             Column(modifier = Modifier.fillMaxSize()) {
 
                 Box(modifier = Modifier.height(420.dp)) {
                     AsyncImage(
-                        model = movie.posterUrl,
-                        contentDescription = movie.title,
+                        model = details.posterUrl,
+                        contentDescription = details.title,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -84,14 +83,14 @@ fun DetailsScreen(
                         .padding(Dimens.lg)
                 ) {
                     Text(
-                        text = movie.title,
+                        text = details.title,
                         style = MaterialTheme.typography.titleLarge
                     )
 
                     Spacer(Modifier.height(Dimens.sm))
 
                     Text(
-                        text = "${movie.year} • ⭐ ${movie.rating}",
+                        text = "${details.year} • ⭐ ${details.rating}",
                         style = MaterialTheme.typography.labelSmall
                     )
 
