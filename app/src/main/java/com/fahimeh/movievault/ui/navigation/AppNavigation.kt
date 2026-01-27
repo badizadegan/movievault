@@ -2,6 +2,7 @@ package com.fahimeh.movievault.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +13,10 @@ import com.fahimeh.movievault.ui.screen.details.DetailsScreen
 import com.fahimeh.movievault.ui.screen.home.HomeScreen
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+    ) {
     val navController = rememberNavController()
 
     NavHost(
