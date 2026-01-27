@@ -76,7 +76,6 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.coil.compose)
-    implementation(libs.accompanist.navigation.animation)
 
     // Network
     implementation(libs.retrofit.core)
