@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.fahimeh.movievault.ui.screen.banner.BannerScreen
 import com.fahimeh.movievault.ui.screen.details.DetailsScreen
@@ -14,10 +13,9 @@ import com.fahimeh.movievault.ui.screen.home.HomeScreen
 
 @Composable
 fun AppNavigation(
-    modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    modifier: Modifier = Modifier
     ) {
-    val navController = rememberNavController()
 
     NavHost(
         navController = navController,
@@ -35,8 +33,8 @@ fun AppNavigation(
         }
 
         composable(Route.HOME) {
-            HomeScreen( onMovieClick = { movieId ->
-                navController.navigate(Route.details(movieId))
+            HomeScreen( onMovieClick = { id ->
+                navController.navigate(Route.details(id))
             })
         }
 
