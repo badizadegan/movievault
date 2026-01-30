@@ -16,8 +16,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fahimeh.movievault.core.util.UiState
 import com.fahimeh.movievault.domain.model.Movie
+import com.fahimeh.movievault.ui.components.EmptyView
+import com.fahimeh.movievault.ui.components.ErrorView
+import com.fahimeh.movievault.ui.components.LoadingView
 import com.fahimeh.movievault.ui.components.MovieCard
 import com.fahimeh.movievault.ui.design.Dimens
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
@@ -25,21 +29,35 @@ import com.fahimeh.movievault.ui.theme.MovieVaultTheme
 @Composable
 fun HomeScreen(
     onMovieClick: (Int) -> Unit = {},
-    viewModel: HomeViewModel = HomeViewModel()
+    viewModel: HomeViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    when (state) {
-        UiState.Loading -> {
-            Text(text = "Loading...")
-        }
+    HomeContent(
+        state = state,
+        onMovieClick = onMovieClick,
+        onRetry = { viewModel.reload() }
+    )
+}
 
-        is UiState.Error -> {
-            Text((state as UiState.Error).message)
-        }
+@Composable
+private fun HomeContent(
+    state: UiState<List<Movie>>,
+    onMovieClick: (Int) -> Unit,
+    onRetry: () -> Unit
+) {
+    when (state) {
+        UiState.Loading -> LoadingView()
+
+        UiState.Empty -> EmptyView(message = "No movies found")
+
+        is UiState.Error -> ErrorView(
+            message = state.message,
+            onRetry = onRetry
+        )
 
         is UiState.Success -> {
-            val movies = (state as UiState.Success<List<Movie>>).data
+            val movies = state.data
 
             Column(
                 modifier = Modifier
@@ -53,13 +71,12 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(Dimens.lg))
 
-
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     verticalArrangement = Arrangement.spacedBy(Dimens.lg),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.lg)
                 ) {
-                    items(movies) { movie ->
+                    items(movies, key = { it.id }) { movie ->
                         MovieCard(
                             movie = movie,
                             onClick = { onMovieClick(movie.id) }
@@ -75,6 +92,15 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     MovieVaultTheme {
-        HomeScreen()
+        HomeContent(
+            state = UiState.Success(
+                listOf(
+                    Movie(1, "Dune: Part Two", "", 8.7, "2024"),
+                    Movie(2, "Interstellar", "", 8.6, "2014")
+                )
+            ),
+            onMovieClick = {},
+            onRetry = {}
+        )
     }
 }

@@ -61,6 +61,13 @@ fun DetailsScreen(
             )
         }
 
+        UiState.Empty -> {
+            Text(
+                text = "No details available",
+                modifier = Modifier.padding(Dimens.lg)
+            )
+        }
+
         is UiState.Success -> {
             val details = (state as UiState.Success<MovieDetails>).data
 

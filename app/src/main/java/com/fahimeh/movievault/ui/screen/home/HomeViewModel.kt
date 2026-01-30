@@ -26,10 +26,15 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val movies = repo.getPopularMovies()
-                _uiState.value = UiState.Success(movies)
+                _uiState.value =
+                    if (movies.isEmpty()) UiState.Empty
+                    else UiState.Success(movies)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
+    }
+    fun reload() {
+        loadPopular()
     }
 }
