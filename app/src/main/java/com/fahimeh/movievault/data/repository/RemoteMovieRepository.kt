@@ -16,6 +16,14 @@ class RemoteMovieRepository(
         return res.results.orEmpty().map { it.toDomain() }
     }
 
+    override suspend fun getTrendingMovies(page: Int): List<Movie> {
+        val res = api.getTrendingMovies(
+            apiKey = BuildConfig.TMDB_API_KEY,
+            page = page
+        )
+        return res.results.orEmpty().map { it.toDomain() }
+    }
+
     override suspend fun getMovieDetails(id: Int): MovieDetails {
         val details = api.getMovieDetails(
             movieId = id,

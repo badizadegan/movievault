@@ -23,4 +23,10 @@ interface TmdbApi {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String
     ): CreditsDto
+
+    @GET("trending/movie/day")
+    suspend fun getTrendingMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int = 1
+    ): PopularMoviesResponse
 }

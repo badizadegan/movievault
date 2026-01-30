@@ -14,6 +14,10 @@ class FakeMovieRepository : MovieRepository {
 
     override suspend fun getPopularMovies(page: Int): List<Movie> = movies
 
+    override suspend fun getTrendingMovies(page: Int): List<Movie> {
+        return getPopularMovies(page)
+    }
+
     override suspend fun getMovieDetails(id: Int): MovieDetails {
         val movie = movies.find { it.id == id } ?: movies.first()
 
