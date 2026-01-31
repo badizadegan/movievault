@@ -7,6 +7,8 @@ private const val IMG = "https://image.tmdb.org/t/p/w500"
 
 fun MovieDetailsDto.toDomain(cast: List<CastMember>): MovieDetails {
     val year = releaseDate?.take(4) ?: "—"
+    val genreNames = genres.orEmpty().mapNotNull { it.name }.filter { it.isNotBlank() }
+
     return MovieDetails(
         id = id,
         title = title.orEmpty(),
@@ -16,6 +18,7 @@ fun MovieDetailsDto.toDomain(cast: List<CastMember>): MovieDetails {
         rating = rating ?: 0.0,
         year = year,
         runtimeMinutes = runtime ?: 0,
+        genres = genreNames,
         cast = cast
     )
 }

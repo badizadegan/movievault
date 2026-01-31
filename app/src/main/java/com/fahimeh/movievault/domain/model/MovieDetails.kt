@@ -9,6 +9,7 @@ data class MovieDetails(
     val rating: Double,
     val year: String,
     val runtimeMinutes: Int,
+    val genres: List<String>,
     val cast: List<CastMember>
 )
 
