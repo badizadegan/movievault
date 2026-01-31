@@ -1,16 +1,11 @@
 package com.fahimeh.movievault.ui.screen.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,7 +17,6 @@ import com.fahimeh.movievault.domain.model.Movie
 import com.fahimeh.movievault.ui.components.EmptyView
 import com.fahimeh.movievault.ui.components.ErrorView
 import com.fahimeh.movievault.ui.components.LoadingView
-import com.fahimeh.movievault.ui.components.MovieCard
 import com.fahimeh.movievault.ui.design.Dimens
 import com.fahimeh.movievault.ui.theme.MovieVaultTheme
 
@@ -42,7 +36,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeContent(
-    state: UiState<List<Movie>>,
+    state: UiState<HomeUiModel>,
     onMovieClick: (Int) -> Unit,
     onRetry: () -> Unit
 ) {
@@ -57,32 +51,36 @@ private fun HomeContent(
         )
 
         is UiState.Success -> {
-            val movies = state.data
+            val data = state.data
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Dimens.lg)
+                    .padding(vertical = Dimens.lg),
             ) {
-                Text(
-                    text = "Popular Movies",
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Spacer(Modifier.height(Dimens.lg))
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.lg),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.lg)
-                ) {
-                    items(movies, key = { it.id }) { movie ->
-                        MovieCard(
-                            movie = movie,
-                            onClick = { onMovieClick(movie.id) }
+                item {
+                    Column(modifier = Modifier.padding(horizontal = Dimens.lg)) {
+                        MovieSection(
+                            title = "Trending",
+                            movies = data.trending,
+                            onMovieClick = onMovieClick
                         )
                     }
                 }
+
+                item { Spacer(Modifier.height(Dimens.xl)) }
+
+                item {
+                    Column(modifier = Modifier.padding(horizontal = Dimens.lg)) {
+                        MovieSection(
+                            title = "Popular",
+                            movies = data.popular,
+                            onMovieClick = onMovieClick
+                        )
+                    }
+                }
+
+                item { Spacer(Modifier.height(Dimens.xl)) }
             }
         }
     }
@@ -94,9 +92,15 @@ fun HomeScreenPreview() {
     MovieVaultTheme {
         HomeContent(
             state = UiState.Success(
-                listOf(
-                    Movie(1, "Dune: Part Two", "", 8.7, "2024"),
-                    Movie(2, "Interstellar", "", 8.6, "2014")
+                HomeUiModel(
+                    trending = listOf(
+                        Movie(1, "Dune: Part Two", "", 8.7, "2024"),
+                        Movie(2, "Interstellar", "", 8.6, "2014")
+                    ),
+                    popular = listOf(
+                        Movie(3, "Joker", "", 8.4, "2019"),
+                        Movie(4, "Inception", "", 8.7, "2010")
+                    )
                 )
             ),
             onMovieClick = {},
