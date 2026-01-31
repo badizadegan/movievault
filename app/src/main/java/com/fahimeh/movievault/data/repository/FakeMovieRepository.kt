@@ -30,6 +30,7 @@ class FakeMovieRepository : MovieRepository {
             rating = movie.rating,
             year = movie.year,
             runtimeMinutes = 120,
+            genres = emptyList(),
             cast = emptyList()
         )
     }
