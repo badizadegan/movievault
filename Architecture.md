@@ -1,65 +1,87 @@
-# Architektur
+## Architektur
 
-MovieVault ist eine Android-Anwendung, die mit Jetpack Compose entwickelt wird.
-Das Projekt folgt einer schichtbasierten Architektur, die an Clean Architecture
-angelehnt ist, und nutzt das MVVM-Pattern für das UI-State-Management.
+MovieVault ist eine Android-Anwendung, die mit **Jetpack Compose** entwickelt wird.
+Das Projekt folgt einer schichtbasierten Architektur, die an der **Clean Architecture**
+angelehnt ist, und verwendet das **MVVM-Pattern** für das UI-State-Management.
 
-Der aktuelle Fokus liegt auf einer sauberen Struktur,
-klaren Verantwortlichkeiten und einem vorhersehbaren Datenfluss.
-Einige Funktionen befinden sich noch in Entwicklung.
+Der Fokus liegt auf einer sauberen Struktur, klaren Verantwortlichkeiten
+und einem vorhersehbaren, unidirektionalen Datenfluss.
+Einige Funktionen befinden sich noch in Entwicklung und werden schrittweise ergänzt.
+
+---
 
 ## Architekturüberblick
 
-Das Projekt ist in drei Hauptschichten unterteilt:
+Die Anwendung ist in drei Hauptschichten unterteilt:
 
-- UI-Schicht (Presentation Layer)
-- Domain-Schicht
-- Data-Schicht
+- **UI-Schicht (Presentation Layer)**
+- **Domain-Schicht**
+- **Data-Schicht**
 
 Jede Schicht hat eine klar definierte Aufgabe und kommuniziert
-nur mit den jeweils vorgesehenen Nachbarschichten.
+ausschließlich mit den jeweils vorgesehenen Nachbarschichten.
+
+---
 
 ## Schichten und Verantwortlichkeiten
 
-### UI-Schicht
-Die UI-Schicht ist für die Darstellung der Benutzeroberfläche
-und die Verarbeitung von Benutzerinteraktionen zuständig.
+### UI-Schicht (Presentation Layer)
 
-- Umsetzung mit Jetpack Compose
-- Screens beobachten den von den ViewModels bereitgestellten UI-State
-- Navigationslogik ist von UI-Komponenten getrennt
+Die UI-Schicht ist für die Darstellung der Benutzeroberfläche
+und die Verarbeitung von Benutzerinteraktionen verantwortlich.
+
+- Umsetzung mit **Jetpack Compose** und **Material 3**
+- Screens beobachten den vom ViewModel bereitgestellten **UI-State** (`StateFlow`)
+- Darstellung der Zustände *Loading*, *Error*, *Empty* und *Success*
+- Navigationslogik ist von den UI-Komponenten getrennt
+- Keine direkte Abhängigkeit von Netzwerk- oder Datenquellen
+
+---
 
 ### Domain-Schicht
-Die Domain-Schicht enthält die zentrale Logik der Anwendung.
 
-- Definition von Domain-Modellen
-- Definition von Repository-Interfaces
-- Dient als Vertrag zwischen UI- und Data-Schicht
-- Unabhängig vom Android-Framework und von Netzwerkbibliotheken
+Die Domain-Schicht enthält die zentrale Logik der Anwendung
+und definiert die Verträge zwischen UI- und Data-Schicht.
+
+- Definition von **Domain-Modellen**
+- Definition von **Repository-Interfaces**
+- Unabhängig vom Android-Framework und externen Bibliotheken
+
+---
 
 ### Data-Schicht
-Die Data-Schicht ist für das Laden und Aufbereiten von Daten zuständig.
 
-- Kommunikation mit der TMDB API
-- Abbildung von API-Antworten (DTOs) auf Domain-Modelle
+Die Data-Schicht ist für das Laden, Verarbeiten und Bereitstellen von Daten zuständig.
+
+- Kommunikation mit der **TMDB API** über Retrofit
+- Abbildung von API-Antworten (DTOs) auf Domain-Modelle (Mapping)
 - Implementierung der in der Domain-Schicht definierten Repository-Interfaces
+- Vorbereitung für lokale Datenhaltung (z. B. Favoriten mit Room)
+
+---
 
 ## Datenfluss
 
-Die Anwendung folgt einem unidirektionalen Datenfluss:
+MovieVault folgt einem **unidirektionalen Datenfluss**:
 
 1. Die UI löst eine Aktion aus (z. B. Laden eines Screens)
-2. Das ViewModel fordert Daten aus der Domain-Schicht an
-3. Die Domain-Schicht delegiert die Anfrage an ein Repository
-4. Das Repository lädt und mappt die Daten aus der Remote-API
+2. Das ViewModel fordert Daten über ein Repository an
+3. Das Repository lädt die Daten aus der Data-Schicht
+4. API-Antworten werden in Domain-Modelle gemappt
 5. Das ViewModel aktualisiert den UI-State
-6. Die UI reagiert auf State-Änderungen und recomposed sich
+6. Die UI reagiert auf State-Änderungen und recomposed sich automatisch
+
+Dieser Ansatz sorgt für eine klare Trennung der Verantwortlichkeiten
+und eine gut testbare Struktur.
+
+---
 
 ## Projektstatus
 
 MovieVault befindet sich aktuell in aktiver Entwicklung.
-Einige Screens (z. B. Suche und Favoriten) sind derzeit Platzhalter
-und werden in zukünftigen Iterationen umgesetzt.
 
-Die Architektur ist so ausgelegt, dass diese Erweiterungen
-ohne größere Refactorings integriert werden können.
+- **Home** und **Detail** sind funktional umgesetzt
+- **Search** und **Favorites** sind derzeit Platzhalter
+- Die Architektur ist so ausgelegt, dass neue Features
+  (z. B. Pagination, Favoriten mit Room, Offline-Caching)
+  ohne größere Refactorings integriert werden können.
