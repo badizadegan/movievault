@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    repository: MovieRepository
+    private val repo: MovieRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<UiState<List<Movie>>> =
-        repository.observeFavorites()
+        repo.observeFavorites()
             .map { list ->
                 if (list.isEmpty()) UiState.Empty
                 else UiState.Success(list)
@@ -27,4 +28,12 @@ class FavoritesViewModel(
                 SharingStarted.WhileSubscribed(5_000),
                 UiState.Loading
             )
+
+    fun removeFavorite(movieId: Int) {
+        viewModelScope.launch {
+            repo.removeFromFavorites(movieId)
+        }
+    }
+
+    fun refresh() {}
 }

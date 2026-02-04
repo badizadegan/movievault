@@ -9,11 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.fahimeh.movievault.ui.screen.banner.BannerScreen
 import com.fahimeh.movievault.ui.screen.details.DetailsRoute
-import com.fahimeh.movievault.ui.screen.details.DetailsScreen
 import com.fahimeh.movievault.ui.screen.favorites.FavoritesRoute
-import com.fahimeh.movievault.ui.screen.favorites.FavoritesScreen
 import com.fahimeh.movievault.ui.screen.home.HomeRoute
-import com.fahimeh.movievault.ui.screen.home.HomeScreen
 import com.fahimeh.movievault.ui.screen.search.SearchScreen
 
 @Composable
