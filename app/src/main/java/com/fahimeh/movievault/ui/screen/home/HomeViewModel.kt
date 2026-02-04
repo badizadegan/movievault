@@ -3,15 +3,13 @@ package com.fahimeh.movievault.ui.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fahimeh.movievault.core.util.UiState
-import com.fahimeh.movievault.data.remote.RetrofitClient
-import com.fahimeh.movievault.data.repository.RemoteMovieRepository
 import com.fahimeh.movievault.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val repo: MovieRepository = RemoteMovieRepository(api = RetrofitClient.api)
+    private val repo: MovieRepository
 ) : ViewModel() {
 
     private val _uiState =

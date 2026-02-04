@@ -8,8 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.fahimeh.movievault.ui.screen.banner.BannerScreen
+import com.fahimeh.movievault.ui.screen.details.DetailsRoute
 import com.fahimeh.movievault.ui.screen.details.DetailsScreen
+import com.fahimeh.movievault.ui.screen.favorites.FavoritesRoute
 import com.fahimeh.movievault.ui.screen.favorites.FavoritesScreen
+import com.fahimeh.movievault.ui.screen.home.HomeRoute
 import com.fahimeh.movievault.ui.screen.home.HomeScreen
 import com.fahimeh.movievault.ui.screen.search.SearchScreen
 
@@ -35,9 +38,9 @@ fun AppNavigation(
         }
 
         composable(Route.HOME) {
-            HomeScreen( onMovieClick = { id ->
-                navController.navigate(Route.details(id))
-            })
+            HomeRoute(
+                onMovieClick = { id -> navController.navigate(Route.details(id)) }
+            )
         }
 
         composable(Route.SEARCH) {
@@ -45,7 +48,9 @@ fun AppNavigation(
         }
 
         composable(Route.FAVORITES) {
-            FavoritesScreen()
+            FavoritesRoute(
+                onMovieClick = { id -> navController.navigate(Route.details(id)) }
+            )
         }
 
         composable(
@@ -57,7 +62,7 @@ fun AppNavigation(
 
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: return@composable
 
-            DetailsScreen(
+            DetailsRoute(
                 movieId = movieId,
                 onBack = { navController.popBackStack() }
             )
